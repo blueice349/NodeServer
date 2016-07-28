@@ -65,7 +65,8 @@ http.ServerResponse.prototype.setCookie = function ( key, value, expires ) {
 
 var handleRequest = function ( request, response ) {
 
-	var path    = request.url.replace( '/', '' ).split( '/' );
+	var url     = request.url.replace( '/', '' );
+	var path    = url ? url.split( '/' ) : [];
 	var cookies = request.getCookies();
 
 	console.log( cookies );
