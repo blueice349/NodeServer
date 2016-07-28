@@ -62,14 +62,44 @@ http.ServerResponse.prototype.setCookie = function ( key, value, expires ) {
 	}
 };
 
+http.IncomingMessage.prototype.getPath = function () {
+
+	var url  = this.url.slice( 0, this.url.indexOf( '?' ) || this.url.length ).replace( '/', '' );
+	var path = url ? url.split( '/' ) : [];
+
+	return path;
+};
+
+http.IncomingMessage.prototype.getArguments = function () {
+
+	var args = {};
+
+	var rawArgs = this.url.slice( this.url.indexOf( '?' ) + 1 || this.url.length, this.url.length ).split( '&' );
+
+	for ( var i in rawArgs ) {
+		var arg = rawArgs[ i ].split( '=' );
+
+		args[ arg[ 0 ] ] = arg[ 1 ];
+	}
+
+	return args;
+};
+
+http.IncomingMessage.prototype.getMethod = function () {
+
+	return this.method;
+};
 
 var handleRequest = function ( request, response ) {
 
-	var url     = request.url.replace( '/', '' );
-	var path    = url ? url.split( '/' ) : [];
+	var path    = request.getPath();
+	var args    = request.getArguments();
 	var cookies = request.getCookies();
 
+	console.log( path );
+	console.log( args );
 	console.log( cookies );
+	console.log( request.getMethod() );
 
 	if ( cookies.test !== undefined ) {
 		console.log( 'Cookie exists! Deleting it!' );
@@ -81,7 +111,11 @@ var handleRequest = function ( request, response ) {
 		response.setCookie( 'test', val );
 	}
 
-	response.end( JSON.stringify( path ) );
+	response.end(
+		'PATH:    ' + JSON.stringify( path ) + '\n' +
+		'ARGS:    ' + JSON.stringify( args ) + '\n' +
+		'Cookies: ' + JSON.stringify( cookies )
+	);
 };
 
 http.createServer( handleRequest ).listen( port, function () {
