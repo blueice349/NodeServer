@@ -64,7 +64,16 @@ http.ServerResponse.prototype.setCookie = function ( key, value, expires ) {
 
 http.IncomingMessage.prototype.getPath = function () {
 
-	var url  = this.url.slice( 0, this.url.indexOf( '?' ) || this.url.length ).replace( '/', '' );
+	var index;
+
+	if ( this.url.indexOf( '?' ) > -1 ) {
+		index = this.url.indexOf( '?' );
+
+	} else {
+		index = this.url.length;
+	}
+
+	var url  = this.url.slice( 0, index ).replace( '/', '' );
 	var path = url ? url.split( '/' ) : [];
 
 	return path;
@@ -96,7 +105,7 @@ var handleRequest = function ( request, response ) {
 	var args    = request.getArguments();
 	var cookies = request.getCookies();
 
-	console.log( path );
+	console.log( 'path: ' + path );
 	console.log( args );
 	console.log( cookies );
 	console.log( request.getMethod() );
