@@ -73,7 +73,7 @@ http.IncomingMessage.prototype.getPath = function () {
 		index = this.url.length;
 	}
 
-	var url  = this.url.replace( '/', '' ).replace( /\/$/, '' ).slice( 0, index );
+	var url  = this.url.slice( 0, index ).replace( '/', '' ).replace( /\/$/, '' );
 	var path = url ? url.split( '/' ) : [];
 
 	return path;
